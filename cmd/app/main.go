@@ -1,8 +1,14 @@
 package main
 
-import "to-do-checklist/internal/app"
+import (
+	"github.com/sirupsen/logrus"
+	"to-do-checklist/internal/app"
+	"to-do-checklist/internal/config"
+)
 
 func main() {
-	application := app.NewApp("8080")
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+	cfg := config.NewConfig()
+	application := app.NewApp(cfg)
 	application.Start()
 }

@@ -1,8 +1,16 @@
 package http
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"to-do-checklist/internal/service"
+)
 
 type Handler struct {
+	service *service.Service
+}
+
+func NewHandler(service *service.Service) *Handler {
+	return &Handler{service}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
