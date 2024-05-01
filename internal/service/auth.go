@@ -32,8 +32,6 @@ func (s *AuthService) generatePasswordHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(s.cfg.PasswordHashingSalt)))
 }
 
-type AuthError error
-
 type tokenClaims struct {
 	jwt.StandardClaims
 	UserID int `json:"user_id"`
@@ -45,7 +43,7 @@ func (s *AuthService) GenerateToken(authInfo domain.SignIn) (string, error) {
 		return "", err
 	}
 	if user.Password != s.generatePasswordHash(authInfo.Password) {
-		return "", AuthError(errors.New("password does not match"))
+		return "", errors.New("password does not match")
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
@@ -54,5 +52,22 @@ func (s *AuthService) GenerateToken(authInfo domain.SignIn) (string, error) {
 		},
 		user.ID,
 	})
-	return token.SignedString([]byte(s.cfg.JWTSigningKey))
+	return token.SignedString(s.cfg.JWTSigningKey)
+}
+
+func (s *AuthService) ValidateToken(accessToken string) (int, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return s.cfg.JWTSigningKey, nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	claim, ok := token.Claims.(*tokenClaims)
+	if !ok && !token.Valid {
+		return 0, errors.New("invalid token")
+	}
+	return claim.UserID, nil
 }

@@ -36,6 +36,7 @@ func (h *Handler) signIn(ctx *gin.Context) {
 		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
+
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"token": token,
 	})

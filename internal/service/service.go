@@ -10,6 +10,7 @@ type Authorization interface {
 	CreateUser(user domain.User) (int, error)
 	generatePasswordHash(password string) string
 	GenerateToken(authInfo domain.SignIn) (string, error)
+	ValidateToken(token string) (int, error)
 }
 
 type TodoList interface{}
