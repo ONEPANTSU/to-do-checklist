@@ -3,6 +3,7 @@ package database
 import (
 	"github.com/jmoiron/sqlx"
 	"to-do-checklist/internal/config"
+	"to-do-checklist/internal/domain"
 )
 
 type PostgresDB struct {
@@ -25,11 +26,20 @@ func (postgres *PostgresDB) Connect(cfg *config.DBConfig) error {
 	return nil
 }
 
-func (postgres *PostgresDB) CreateQuery(query string, args ...any) (int, error) {
+func (postgres *PostgresDB) CreateAndReturnIDQuery(query string, args ...any) (int, error) {
 	var id int
 	row := postgres.db.QueryRow(query, args...)
 	if err := row.Scan(&id); err != nil {
 		return -1, err
 	}
 	return id, nil
+}
+
+func (postgres *PostgresDB) GetOneQuery(model domain.Model, query string, args ...any) ([]interface{}, error) {
+	row := postgres.db.QueryRow(query, args...)
+	fields := model.GetFields()
+	if err := row.Scan(fields...); err != nil {
+		return nil, err
+	}
+	return fields, nil
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"to-do-checklist/internal/config"
 	"to-do-checklist/internal/domain"
 	"to-do-checklist/internal/repository"
 )
@@ -8,6 +9,7 @@ import (
 type Authorization interface {
 	CreateUser(user domain.User) (int, error)
 	generatePasswordHash(password string) string
+	GenerateToken(authInfo domain.SignIn) (string, error)
 }
 
 type TodoList interface{}
@@ -20,8 +22,8 @@ type Service struct {
 	TodoItem      TodoItem
 }
 
-func NewService(repo *repository.Repository) *Service {
+func NewService(repo *repository.Repository, authConfig *config.AuthConfig) *Service {
 	return &Service{
-		Authorization: newAuthService(repo.Authorization),
+		Authorization: newAuthService(repo.Authorization, authConfig),
 	}
 }

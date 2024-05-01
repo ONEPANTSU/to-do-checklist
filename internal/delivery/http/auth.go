@@ -24,5 +24,19 @@ func (h *Handler) signUp(ctx *gin.Context) {
 }
 
 func (h *Handler) signIn(ctx *gin.Context) {
+	var input domain.SignIn
 
+	if err := ctx.BindJSON(&input); err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token, err := h.service.Authorization.GenerateToken(input)
+	if err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 }

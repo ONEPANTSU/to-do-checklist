@@ -1,6 +1,9 @@
 app:
   port: "8081"
 
+auth:
+  token_ttl: 12
+
 db:
   driver: "postgres"
   host: "localhost"

@@ -20,5 +20,23 @@ func (r *AuthRepository) CreateUser(user domain.User) (int, error) {
 			"values ($1, $2, $3) returning id",
 		usersStorage,
 	)
-	return r.db.CreateQuery(query, user.Username, user.Email, user.Password)
+	return r.db.CreateAndReturnIDQuery(query, user.Username, user.Email, user.Password)
+}
+
+func (r *AuthRepository) GetUser(username string) (*domain.User, error) {
+	query := fmt.Sprintf(
+		"select * from %s where username = $1",
+		usersStorage,
+	)
+	userFields, err := r.db.GetOneQuery(
+		&domain.User{},
+		query,
+		username,
+	)
+	if err != nil {
+		return nil, err
+	}
+	user := domain.User{}
+	user.ConvertFromArray(userFields)
+	return &user, nil
 }

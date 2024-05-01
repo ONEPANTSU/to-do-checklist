@@ -22,7 +22,7 @@ func NewApp(cfg *config.Config) App {
 		logrus.Fatalf("error occurred while db connecting: %s", err)
 	}
 	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
+	services := service.NewService(repos, cfg.Auth)
 	handler := httpHandler.NewHandler(services)
 
 	return App{

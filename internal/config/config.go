@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	App *AppConfig
-	DB  *DBConfig
+	App  *AppConfig
+	Auth *AuthConfig
+	DB   *DBConfig
 }
 
 func initYamlConfig() {
@@ -29,7 +30,8 @@ func NewConfig() *Config {
 	initYamlConfig()
 	initEnvConfig()
 	return &Config{
-		App: newAppConfig(),
-		DB:  newDBConfig(),
+		App:  newAppConfig(),
+		Auth: newAuthConfig(),
+		DB:   newDBConfig(),
 	}
 }
