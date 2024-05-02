@@ -2,9 +2,9 @@ package domain
 
 type User struct {
 	ID       int    `json:"-" db:"id"`
-	Username string `json:"username" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username" binding:"required" db:"username"`
+	Email    string `json:"email" binding:"required" db:"email"`
+	Password string `json:"password" binding:"required" db:"hashed_password"`
 }
 
 func (user *User) ConvertFromArray(fields []interface{}) {

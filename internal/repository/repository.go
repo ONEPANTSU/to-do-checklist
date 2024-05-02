@@ -1,15 +1,7 @@
 package repository
 
 import (
-	"to-do-checklist/internal/database"
 	"to-do-checklist/internal/domain"
-)
-
-const (
-	usersStorage     = "users"
-	todoListsStorage = "todo_lists"
-	todoItemsStorage = "todo_items"
-	userListStorage  = "user_list"
 )
 
 type Authorization interface {
@@ -17,7 +9,12 @@ type Authorization interface {
 	GetUser(username string) (*domain.User, error)
 }
 
-type TodoList interface{}
+type TodoList interface {
+	CreateList(list *domain.TodoList, userID int) (int, error)
+	GetAllLists() *[]domain.TodoList
+	GetUsersLists(userID int) (*[]domain.TodoList, error)
+	GetListByID(listID int, userID int) (*domain.TodoList, error)
+}
 
 type TodoItem interface{}
 
@@ -25,10 +22,4 @@ type Repository struct {
 	Authorization Authorization
 	TodoList      TodoList
 	TodoItem      TodoItem
-}
-
-func NewRepository(db database.Database) *Repository {
-	return &Repository{
-		Authorization: newAuthRepository(db),
-	}
 }
