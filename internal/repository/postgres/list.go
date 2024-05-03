@@ -3,6 +3,7 @@ package postgres
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"strings"
 	"to-do-checklist/internal/domain"
 )
 
@@ -69,7 +70,8 @@ func (r *TodoListsRepository) GetUsersLists(userID int) (*[]domain.TodoList, err
 	return &lists, nil
 }
 
-func (r *TodoListsRepository) GetListByID(listID int, userID int) (*domain.TodoList, error) {
+func (r *TodoListsRepository) GetListByID(listID, userID int) (*domain.TodoList, error) {
+
 	query := fmt.Sprintf(
 		"select list.id, list.title, list.description "+
 			"from %s list inner join %s user_list "+
@@ -85,4 +87,58 @@ func (r *TodoListsRepository) GetListByID(listID int, userID int) (*domain.TodoL
 		return nil, err
 	}
 	return &list, nil
+}
+
+func (r *TodoListsRepository) UpdateList(list *domain.UpdateTodoList, listID, userID int) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argID := 1
+
+	if list.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title=$%d", argID))
+		args = append(args, list.Title)
+		argID++
+	}
+	if list.Description != nil {
+		setValues = append(setValues, fmt.Sprintf("description=$%d", argID))
+		args = append(args, list.Description)
+		argID++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf(
+		"update %s list set %s "+
+			"from %s user_list "+
+			"where user_list.list_id = list.id "+
+			"and list.id = $%d "+
+			"and user_list.user_id = $%d",
+		todoListsTable,
+		setQuery,
+		userListTable,
+		argID,
+		argID+1,
+	)
+	args = append(args, listID, userID)
+
+	_, err := r.db.Exec(query, args...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *TodoListsRepository) DeleteList(listID, userID int) error {
+	query := fmt.Sprintf(
+		"delete from %s list using %s user_list "+
+			"where user_list.list_id = list.id and "+
+			"list_id = $1 and user_list.user_id = $2",
+		todoListsTable,
+		userListTable,
+	)
+	_, err := r.db.Exec(query, listID, userID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

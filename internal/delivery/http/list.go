@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -49,13 +50,52 @@ func (h *Handler) getList(ctx *gin.Context) {
 	listID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
 	}
 	list, err := h.service.TodoList.GetListById(listID, userID)
 	if err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 	ctx.JSON(http.StatusOK, list)
-
 }
-func (h *Handler) updateList(ctx *gin.Context) {}
-func (h *Handler) deleteList(ctx *gin.Context) {}
+
+func (h *Handler) updateList(ctx *gin.Context) {
+	userID, err := getUserID(ctx)
+	if err != nil {
+		return
+	}
+	listID, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	var input domain.UpdateTodoList
+	if err := ctx.BindJSON(&input); err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.service.TodoList.UpdateList(&input, listID, userID); err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, fmt.Sprintf("updated list %d", listID))
+}
+
+func (h *Handler) deleteList(ctx *gin.Context) {
+	userID, err := getUserID(ctx)
+	if err != nil {
+		return
+	}
+	listID, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	if err := h.service.TodoList.DeleteList(listID, userID); err != nil {
+		newErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, fmt.Sprintf("list deleted: %d", listID))
+}
