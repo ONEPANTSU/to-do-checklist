@@ -47,7 +47,7 @@ func (h *Handler) getList(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	listID, err := strconv.Atoi(ctx.Param("id"))
+	listID, err := strconv.Atoi(ctx.Param("list_id"))
 	if err != nil {
 		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
@@ -65,7 +65,7 @@ func (h *Handler) updateList(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	listID, err := strconv.Atoi(ctx.Param("id"))
+	listID, err := strconv.Atoi(ctx.Param("list_id"))
 	if err != nil {
 		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
@@ -88,7 +88,7 @@ func (h *Handler) deleteList(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	listID, err := strconv.Atoi(ctx.Param("id"))
+	listID, err := strconv.Atoi(ctx.Param("list_id"))
 	if err != nil {
 		newErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return

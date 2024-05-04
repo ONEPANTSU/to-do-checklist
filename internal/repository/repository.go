@@ -18,7 +18,13 @@ type TodoList interface {
 	DeleteList(userID int, listID int) error
 }
 
-type TodoItem interface{}
+type TodoItem interface {
+	CreateItem(item *domain.TodoItem) (int, error)
+	GetItems(listID int) (*[]domain.TodoItem, error)
+	GetItemByID(itemID, userID int) (*domain.TodoItem, error)
+	UpdateItem(item *domain.UpdateTodoItem, itemID int) error
+	DeleteItem(itemID int) error
+}
 
 type Repository struct {
 	Authorization Authorization

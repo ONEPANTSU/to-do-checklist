@@ -12,17 +12,17 @@ import (
 )
 
 type AuthService struct {
-	cfg  *config.AuthConfig
-	repo repository.Authorization
+	cfg      *config.AuthConfig
+	authRepo repository.Authorization
 }
 
-func newAuthService(repo repository.Authorization, authConfig *config.AuthConfig) *AuthService {
-	return &AuthService{repo: repo, cfg: authConfig}
+func newAuthService(authRepo repository.Authorization, authConfig *config.AuthConfig) *AuthService {
+	return &AuthService{authRepo: authRepo, cfg: authConfig}
 }
 
 func (s *AuthService) CreateUser(user domain.User) (int, error) {
 	user.Password = s.generatePasswordHash(user.Password)
-	return s.repo.CreateUser(user)
+	return s.authRepo.CreateUser(user)
 }
 
 func (s *AuthService) generatePasswordHash(password string) string {
@@ -38,7 +38,7 @@ type tokenClaims struct {
 }
 
 func (s *AuthService) GenerateToken(authInfo domain.SignIn) (string, error) {
-	user, err := s.repo.GetUser(authInfo.Username)
+	user, err := s.authRepo.GetUser(authInfo.Username)
 	if err != nil {
 		return "", err
 	}

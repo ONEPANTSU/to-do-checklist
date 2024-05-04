@@ -19,3 +19,7 @@ func newErrorResponse(ctx *gin.Context, statusCode int, message string) errorRes
 type TodoListsData struct {
 	Data []domain.TodoList `json:"data"`
 }
+
+type TodoItemData struct {
+	Data []domain.TodoItem `json:"data"`
+}

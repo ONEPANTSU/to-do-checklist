@@ -7,27 +7,27 @@ import (
 )
 
 type TodoListService struct {
-	repo repository.TodoList
+	listRepo repository.TodoList
 }
 
-func newTodoListService(repo repository.TodoList) *TodoListService {
-	return &TodoListService{repo: repo}
+func newTodoListService(listRepo repository.TodoList) *TodoListService {
+	return &TodoListService{listRepo: listRepo}
 }
 
 func (s *TodoListService) CreateList(list *domain.TodoList, userID int) (int, error) {
-	return s.repo.CreateList(list, userID)
+	return s.listRepo.CreateList(list, userID)
 }
 
 func (s *TodoListService) GetAllLists() *[]domain.TodoList {
-	return s.repo.GetAllLists()
+	return s.listRepo.GetAllLists()
 }
 
 func (s *TodoListService) GetUsersLists(userID int) (*[]domain.TodoList, error) {
-	return s.repo.GetUsersLists(userID)
+	return s.listRepo.GetUsersLists(userID)
 }
 
 func (s *TodoListService) GetListById(listID, userID int) (*domain.TodoList, error) {
-	return s.repo.GetListByID(listID, userID)
+	return s.listRepo.GetListByID(listID, userID)
 }
 
 func (s *TodoListService) UpdateList(list *domain.UpdateTodoList, listID, userID int) error {
@@ -38,7 +38,7 @@ func (s *TodoListService) UpdateList(list *domain.UpdateTodoList, listID, userID
 	if err := list.Validate(); err != nil {
 		return err
 	}
-	return s.repo.UpdateList(list, listID, userID)
+	return s.listRepo.UpdateList(list, listID, userID)
 }
 
 func (s *TodoListService) DeleteList(listID int, userID int) error {
@@ -46,5 +46,5 @@ func (s *TodoListService) DeleteList(listID int, userID int) error {
 	if err != nil {
 		return errors.New("list does not exist")
 	}
-	return s.repo.DeleteList(listID, userID)
+	return s.listRepo.DeleteList(listID, userID)
 }
