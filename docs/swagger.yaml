@@ -1,0 +1,450 @@
+basePath: /
+definitions:
+  domain.SignIn:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  domain.TodoItem:
+    properties:
+      completed:
+        type: boolean
+      description:
+        type: string
+      id:
+        type: integer
+      list_id:
+        type: integer
+      title:
+        type: string
+    required:
+    - list_id
+    type: object
+  domain.TodoList:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  domain.UpdateTodoItem:
+    properties:
+      completed:
+        type: boolean
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  domain.UpdateTodoList:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  domain.User:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  http.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: This is an API for TODO Lists Application
+  title: TODO Lists API
+  version: "1.0"
+paths:
+  /api/items:
+    post:
+      consumes:
+      - application/json
+      description: The route for creating new TODO Item in TODO List
+      parameters:
+      - description: TODO Item info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TodoItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'item_id": 1}'
+          schema:
+            type: json
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Create Item
+      tags:
+      - TODO Item
+  /api/items/{item_id}:
+    delete:
+      consumes:
+      - application/json
+      description: The route for deleting TODO Item
+      parameters:
+      - description: TODO Item ID
+        in: path
+        name: item_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: string
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Delete Item by ID
+      tags:
+      - TODO Item
+    get:
+      consumes:
+      - application/json
+      description: The route for getting TODO Item by ID
+      parameters:
+      - description: TODO Item ID
+        in: path
+        name: item_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Get Item by ID
+      tags:
+      - TODO Item
+    put:
+      consumes:
+      - application/json
+      description: The route for editing TODO Item
+      parameters:
+      - description: TODO Item ID
+        in: path
+        name: item_id
+        required: true
+        type: integer
+      - description: Updating Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateTodoItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: string
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Update Item
+      tags:
+      - TODO Item
+  /api/lists:
+    get:
+      consumes:
+      - application/json
+      description: The route for getting user's TODO Lists
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Get User's Lists
+      tags:
+      - TODO List
+    post:
+      consumes:
+      - application/json
+      description: The route for creating new TODO List
+      parameters:
+      - description: TODO List info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TodoList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'list_id": 1}'
+          schema:
+            type: json
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Create List
+      tags:
+      - TODO List
+  /api/lists/{list_id}:
+    delete:
+      consumes:
+      - application/json
+      description: The route for deleting TODO List
+      parameters:
+      - description: TODO List ID
+        in: path
+        name: list_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: string
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Delete List by ID
+      tags:
+      - TODO List
+    get:
+      consumes:
+      - application/json
+      description: The route for getting TODO List by ID
+      parameters:
+      - description: TODO List ID
+        in: path
+        name: list_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Get List by ID
+      tags:
+      - TODO List
+    put:
+      consumes:
+      - application/json
+      description: The route for editing TODO List
+      parameters:
+      - description: TODO List ID
+        in: path
+        name: list_id
+        required: true
+        type: integer
+      - description: Updating Fields
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateTodoList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: string
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Update List
+      tags:
+      - TODO List
+  /api/lists/{list_id}/items:
+    get:
+      consumes:
+      - application/json
+      description: The route for getting all TODO Items from TODO List
+      parameters:
+      - description: TODO List ID
+        in: path
+        name: list_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      security:
+      - API Auth Key: []
+      summary: Get Items from List
+      tags:
+      - TODO Item
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: The route for log-in
+      parameters:
+      - description: Log-in info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SignIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'token": "string"}'
+          schema:
+            type: json
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      summary: Sign in
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: The route for registration
+      parameters:
+      - description: Register info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'id": 1}'
+          schema:
+            type: json
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.errorResponse'
+      summary: Sign up
+      tags:
+      - auth
+securityDefinitions:
+  API Auth Key:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

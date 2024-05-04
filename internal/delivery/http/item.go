@@ -8,6 +8,18 @@ import (
 	"to-do-checklist/internal/domain"
 )
 
+// createItem godoc
+// @Security API Auth Key
+// @Summary      Create Item
+// @Description  The route for creating new TODO Item in TODO List
+// @Tags         TODO Item
+// @Accept       json
+// @Produce      json
+// @Param input body domain.TodoItem true "TODO Item info"
+// @Success      200  {json}  	{"item_id": 1}
+// @Failure      400  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /api/items [post]
 func (h *Handler) createItem(ctx *gin.Context) {
 	userID, err := getUserID(ctx)
 	if err != nil {
@@ -25,6 +37,19 @@ func (h *Handler) createItem(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, map[string]interface{}{"item_id": itemID})
 }
+
+// getItems godoc
+// @Security API Auth Key
+// @Summary      Get Items from List
+// @Description  The route for getting all TODO Items from TODO List
+// @Tags         TODO Item
+// @Accept       json
+// @Produce      json
+// @Param list_id path int true "TODO List ID"
+// @Success      200  {json}  	TodoItemData
+// @Failure      400  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /api/lists/{list_id}/items [get]
 func (h *Handler) getItems(ctx *gin.Context) {
 	userID, err := getUserID(ctx)
 	if err != nil {
@@ -43,6 +68,18 @@ func (h *Handler) getItems(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, TodoItemData{*items})
 }
 
+// getItem godoc
+// @Security API Auth Key
+// @Summary      Get Item by ID
+// @Description  The route for getting TODO Item by ID
+// @Tags         TODO Item
+// @Accept       json
+// @Produce      json
+// @Param item_id path int true "TODO Item ID"
+// @Success      200  {json}  	domain.TodoItem
+// @Failure      400  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /api/items/{item_id} [get]
 func (h *Handler) getItem(ctx *gin.Context) {
 	userID, err := getUserID(ctx)
 	if err != nil {
@@ -61,6 +98,19 @@ func (h *Handler) getItem(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, item)
 }
 
+// updateItem godoc
+// @Security API Auth Key
+// @Summary      Update Item
+// @Description  The route for editing TODO Item
+// @Tags         TODO Item
+// @Accept       json
+// @Produce      json
+// @Param item_id path int true "TODO Item ID"
+// @Param input body domain.UpdateTodoItem true "Updating Fields"
+// @Success      200  {string}  "string"
+// @Failure      400  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /api/items/{item_id} [put]
 func (h *Handler) updateItem(ctx *gin.Context) {
 	userID, err := getUserID(ctx)
 	if err != nil {
@@ -83,6 +133,18 @@ func (h *Handler) updateItem(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, fmt.Sprintf("updated item %d", itemID))
 }
 
+// deleteItem godoc
+// @Security API Auth Key
+// @Summary      Delete Item by ID
+// @Description  The route for deleting TODO Item
+// @Tags         TODO Item
+// @Accept       json
+// @Produce      json
+// @Param item_id path int true "TODO Item ID"
+// @Success      200  {string}  "string"
+// @Failure      400  {object}  errorResponse
+// @Failure      500  {object}  errorResponse
+// @Router       /api/items/{item_id} [delete]
 func (h *Handler) deleteItem(ctx *gin.Context) {
 	userID, err := getUserID(ctx)
 	if err != nil {
