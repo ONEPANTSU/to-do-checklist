@@ -6,9 +6,10 @@ import (
 	"to-do-checklist/internal/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock_services.go
+
 type Authorization interface {
 	CreateUser(user domain.User) (int, error)
-	generatePasswordHash(password string) string
 	GenerateToken(authInfo domain.SignIn) (string, error)
 	ValidateToken(token string) (int, error)
 }
@@ -31,9 +32,9 @@ type TodoItem interface {
 }
 
 type Service struct {
-	Authorization Authorization
-	TodoList      TodoList
-	TodoItem      TodoItem
+	Authorization
+	TodoList
+	TodoItem
 }
 
 func NewService(repo *repository.Repository, authConfig *config.AuthConfig) *Service {
